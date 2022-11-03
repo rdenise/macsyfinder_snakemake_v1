@@ -15,11 +15,15 @@ properties:
   replicon_topology:
     type: string
     enum: ["linear","circular"]
-  macsydata:
+  macsydata_def:
+    type: string
+  macsydata_profile:
     type: string
   models_tsv:
     type: string
   models:
+    type: string
+  macsyfinder:
     type: string
 
 required:
@@ -27,6 +31,8 @@ required:
   - output_folder
   - db_type
   - replicon_topology
-  - macsydata
+  - macsydata_profile
+  - macsydata_def
   - models_tsv
   - models
+  - macsyfinder

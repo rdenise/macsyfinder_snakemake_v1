@@ -3,11 +3,6 @@
 
 rule macsyfinder:
     input:
-        install=os.path.join(
-                OUTPUT_FOLDER,
-                "log",
-                "installation.done"
-            ),
         fasta=os.path.join(FASTA_FOLDER, f"{{replicon}}.{EXT_FILE}"),
     output:
         results=directory(
@@ -21,6 +16,7 @@ rule macsyfinder:
             OUTPUT_FOLDER,
             "REPLICONS",
             "{replicon}",
+            "macsyfinder.report",
         ),
         out=os.path.join(
             OUTPUT_FOLDER,
@@ -32,11 +28,13 @@ rule macsyfinder:
             OUTPUT_FOLDER,
             "REPLICONS",
             "{replicon}",
+            "macsyfinder.summary",
         ),
         tab=os.path.join(
             OUTPUT_FOLDER,
             "REPLICONS",
             "{replicon}",
+            "macsyfinder.tab",
         ),        
     params:
         macsydata_def=config["macsydata_def"],
@@ -57,17 +55,14 @@ rule macsyfinder:
         "../envs/macsyfinder.yaml"
     shell:
         """
-        if [[ -e {params.folder} ]]; then
-            rm -rf {params.folder}
+        if [[ -e {output.results} ]]; then
+            rm -rf {output.results}
         fi
 
         if [[ -s {input.fasta:q} ]] ; then
-            python2.7 {params.macsyfinder} -d {params.def_folder} -p {params.profile} --profile-suffix .hmm \
+            python2.7 {params.macsyfinder} -d {params.macsydata_def:q} -p {params.macsydata_profile:q} --profile-suffix .hmm \
             --sequence-db {input.fasta:q} -o {output.results:q} --db-type {params.db_type} --replicon-topology {params.replicon_topology} \
-            -w {threads} --models {params.models} &> {log:q}
-
-            touch tmp_{params.replicon}
-            rm tmp_{params.replicon}
+            -w {threads} {params.models} &> {log:q}
         else
             echo {input.fasta}
             mkdir -p {output.results:q}
@@ -78,7 +73,7 @@ rule macsyfinder:
         touch {output.summary}
         touch {output.tab}
         
-        rm {input.seq}.[ip]*       
+        #rm {input.fasta}.[ip]*       
         """
 
 
