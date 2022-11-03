@@ -1,0 +1,8 @@
+name: macsyfinderV1
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python = 2.7
+  - hmmer = 3.1
+  - blast = 2.2
