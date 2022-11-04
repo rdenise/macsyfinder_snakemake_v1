@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
+import sys, os
 import pandas as pd
 
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
