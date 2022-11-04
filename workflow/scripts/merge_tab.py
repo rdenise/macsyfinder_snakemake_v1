@@ -14,7 +14,7 @@ for file_tab in input.all_out :
 with open(str(output), "wt") as w_file :
     w_file.write(header+"\n")
 
-    for file_out in input.all_out : 
+    for file_out in snakemake.input.all_out : 
         pd.read_table(
             file_out, 
             names=header.split(), 
