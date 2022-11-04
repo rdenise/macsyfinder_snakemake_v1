@@ -5,18 +5,24 @@ import pandas as pd
 
 sys.stderr = sys.stdout = open(snakemake.log[0], "w")
 
-for file_tab in snakemake.input.all_out :
-    if os.stat(file_tab).st_size != 0 :
-        with open(file_tab, "rt") as r_file :
-            header = r_file.readline().rstrip().replace("#", "")
-            break
+list_tab = []
 
-with open(snakemake.output.out, "wt") as w_file :
-    w_file.write(header+"\n")
+for file_out in snakemake.input.all_out : 
+    if os.stat(file_out).st_size != 0 :
+        with open(file_out, "rt") as r_file :
+            columns = r_file.readline().rstrip().replace("#", "").split()
 
-    for file_out in snakemake.input.all_out : 
-        pd.read_table(
-            file_out, 
-            names=header.split(), 
-            comment="#", 
-            skiprows=1).to_csv(w_file, index=False, header=False, sep="\t")
+        dtypes = {columns[0]:"string"}
+        dtypes.update({column:int for column in columns[1:]})
+
+        list_tab.append(
+            pd.read_table(
+                file_out, 
+                names=columns, 
+                comment="#",
+                dtype=dtypes,
+                skiprows=1
+            )
+        )
+
+pd.concat(list_tab).fillna(0).to_csv(snakemake.output.out, index=False, sep="\t")
