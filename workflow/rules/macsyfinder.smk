@@ -120,7 +120,7 @@ rule macsymerge_report:
                     OUTPUT_FOLDER, 
                     "REPLICONS",
                     "{replicon}", 
-                    "macsyfinder.out"
+                    "macsyfinder.report"
                 ), 
                 replicon=REPLICON_NAME
             )
